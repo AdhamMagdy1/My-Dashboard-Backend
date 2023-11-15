@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const validationMiddleware = require('../middlewares/validationMiddleware');
+const authenticate = require('../middlewares/authMiddleware');
 const projectController = require('../controllers/projectController');
 
 // Middleware to validate project data
@@ -16,15 +17,25 @@ const validateProject = [
 ];
 
 // Create a new project
-router.post('/projects', validateProject, projectController.createNewProject);
+router.post(
+  '/projects',
+  authenticate,
+  validateProject,
+  projectController.createNewProject
+);
 
 // Edit an existing project
-router.put('/projects/:id', validateProject, projectController.editProject);
+router.put(
+  '/projects/:id',
+  authenticate,
+  validateProject,
+  projectController.editProject
+);
 
 // Get all projects
-router.get('/projects', projectController.getAllProjects);
+router.get('/projects', authenticate, projectController.getAllProjects);
 
 // Delete a project by ID
-router.delete('/projects/:id', projectController.deleteProject);
+router.delete('/projects/:id', authenticate, projectController.deleteProject);
 
 module.exports = router;

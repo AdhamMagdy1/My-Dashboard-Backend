@@ -1,25 +1,28 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { AppError } = require('../utils/error');
 
-const comparePassword = (password, hashedPassword) => {
-  return bcrypt.compareSync(password, hashedPassword);
-};
-
+// Middleware function to authenticate user requests
 const authenticate = (req, res, next) => {
-  const { password } = req.body;
+  try {
+    // 1. Get the token from the request header
+    const token = req.header('Authorization');
 
-  if (!password || !comparePassword(password, process.env.HASHED_PASSWORD)) {
-    const error = new AppError('Invalid password', 401);
-    return next(error);
+    // 2. If no token is provided, send an error response
+    if (!token) {
+      throw new AppError('Authentication failed. No token provided.', 401);
+    }
+
+    // 3. Verify the token and extract the user data
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // // 4. Attach the user data (decoded) to the request for use in route handlers
+    // req.user = decoded;
+
+    // 5. Continue to the next middleware or route handler
+    next();
+  } catch (error) {
+    next(new AppError('Invalid token.', 401)); // Pass any errors to the error handling middleware
   }
-
-  const token = jwt.sign(
-    { userId: 'your_unique_identifier' },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-  res.json({ token });
 };
 
 module.exports = authenticate;

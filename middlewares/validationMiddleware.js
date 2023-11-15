@@ -7,8 +7,11 @@ const validationMiddleware = (req, res, next) => {
 
   if (!errors.isEmpty()) {
     // If there are validation errors, create and return a custom error
-    const error = new AppError('Validation failed', 400);
-    error.errors = errors.array(); // Attach validation errors to the custom error
+    const error = new AppError(
+      'Validation failed. Check the provided data.',
+      400
+    );
+    error.validationErrors = errors.array(); // Attach validation errors to the custom error
     return next(error);
   }
 

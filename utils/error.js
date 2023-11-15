@@ -20,6 +20,7 @@ const errorHandler = (err, req, res, next) => {
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
+    errors: err.validationErrors || [], // Include validation errors if available
   });
 };
 
