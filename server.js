@@ -27,7 +27,12 @@ const projectRoutes = require('./routes/projectsRoutes');
 app.use('/auth', authRoutes); // Use the auth routes
 app.use('/api', projectRoutes); // Use the project routes (or your existing routes)
 // Error handling middleware
+// Ping endpoint
+app.get('/ping', (req, res) => {
+  res.status(200).send('Server is up and running!');
+});
 app.use(errorHandler); // Use the error handling middleware at the end of your middleware stack
+
 // Start the server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
