@@ -28,7 +28,6 @@ router.post(
 router.put(
   '/projects/:id',
   authenticate,
-  validateProject,
   projectController.editProject
 );
 
