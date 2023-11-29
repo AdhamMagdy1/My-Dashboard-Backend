@@ -1,19 +1,8 @@
 const Project = require('../models/project');
-const { cloudinary } = require('../config/config');
-
 // Controller function to create a new project
 const createNewProject = async (req, res) => {
   try {
     const projectData = req.body; // Assuming project data is sent in the request body
-
-    // Upload the image to Cloudinary
-    const result = await cloudinary.uploader.upload(projectData.imgLink, {
-      folder: 'your_folder_name', // Optional: Specify a folder in Cloudinary
-    });
-
-    // Update the projectData with the Cloudinary image URL
-    projectData.imgLink = result.secure_url;
-
     // Create a new project with the updated projectData
     const newProject = await Project.create(projectData);
     res.status(201).json(newProject);
@@ -27,26 +16,6 @@ const createNewProject = async (req, res) => {
 const editProject = async (req, res) => {
   const projectId = req.params.id; // Assuming project ID is in the request parameters
   try {
-    // Check if imgLink is provided in the request body
-    if (req.body.imgLink) {
-      // Upload the updated image to Cloudinary
-      const result = await cloudinary.uploader.upload(req.body.imgLink, {
-        folder: 'portofolio', // Optional: Specify a folder in Cloudinary
-      });
-
-      // Update the req.body with the Cloudinary image URL
-      req.body.imgLink = result.secure_url;
-    } else {
-      // If imgLink is not provided, retrieve it from the database
-      const existingProject = await Project.findById(projectId);
-      if (!existingProject) {
-        return res.status(404).json({ error: 'Project not found' });
-      }
-
-      // Use the existing imgLink from the database
-      req.body.imgLink = existingProject.imgLink;
-    }
-
     const updatedProject = await Project.findByIdAndUpdate(
       projectId,
       req.body,
