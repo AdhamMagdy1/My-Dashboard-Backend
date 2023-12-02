@@ -17,21 +17,13 @@ const projectController = require('../controllers/projectController');
 // ];
 
 // Create a new project
-router.post(
-  '/projects',
-  authenticate,
-  projectController.createNewProject
-);
+router.post('/projects', authenticate, projectController.createNewProject);
 
 // Edit an existing project
-router.put(
-  '/projects/:id',
-  authenticate,
-  projectController.editProject
-);
+router.put('/projects/:id', authenticate, projectController.editProject);
 
 // Get all projects
-router.get('/projects', authenticate, projectController.getAllProjects);
+router.get('/projects', projectController.getAllProjects);
 
 // Delete a project by ID
 router.delete('/projects/:id', authenticate, projectController.deleteProject);
